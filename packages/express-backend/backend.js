@@ -26,7 +26,7 @@ const users = {
     {
       id: "yat999",
       name: "Dee",
-      job: "Aspring actress",
+      job: "Aspiring actress",
     },
     {
       id: "zap555",
@@ -36,8 +36,31 @@ const users = {
   ],
 };
 
-const findUserByName = (name) => {
-  return users["users_list"].filter((user) => user["name"] === name);
+const findUsersByNameAndJob = (name, job) => {
+  return users["users_list"].filter((user) => {
+    return (
+      (name === undefined || user["name"] === name) &&
+      (job === undefined || user["job"] === job)
+    );
+  });
+};
+
+const findUserById = (id) =>
+  users["users_list"].find((user) => user["id"] === id);
+
+const addUser = (user) => {
+  users["users_list"].push(user);
+  return user;
+};
+
+const deleteUserById = (id) => {
+  const index = users["users_list"].findIndex((user) => user["id"] === id);
+  if (index !== -1) {
+    users["users_list"].splice(index, 1);
+    return true;
+  } else {
+    return false;
+  }
 };
 
 app.get("/", (req, res) => {
@@ -46,17 +69,18 @@ app.get("/", (req, res) => {
 
 app.get("/users", (req, res) => {
   const name = req.query.name;
-  if (name != undefined) {
-    let result = findUserByName(name);
-    result = { users_list: result };
-    res.send(result);
-  } else {
-    res.send(users);
-  }
-});
+  const job = req.query.job;
 
-const findUserById = (id) =>
-  users["users_list"].find((user) => user["id"] === id);
+  let result = findUsersByNameAndJob(name, job);
+
+  if (result.length === 0) {
+    result = { users_list: [] };
+  } else {
+    result = { users_list: result };
+  }
+
+  res.send(result);
+});
 
 app.get("/users/:id", (req, res) => {
   const id = req.params["id"]; //or req.params.id
@@ -65,6 +89,22 @@ app.get("/users/:id", (req, res) => {
     res.status(404).send("Resource not found.");
   } else {
     res.send(result);
+  }
+});
+
+app.post("/users", (req, res) => {
+  const userToAdd = req.body;
+  const addedUser = addUser(userToAdd);
+  res.status(201).send(addedUser);
+});
+
+app.delete("/users/:id", (req, res) => {
+  const id = req.params["id"];
+  const wasDeleted = deleteUserById(id);
+  if (wasDeleted) {
+    res.status(200).send(`User with id ${id} deleted.`);
+  } else {
+    res.status(404).send("Resource not found.");
   }
 });
 
