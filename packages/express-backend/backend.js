@@ -37,6 +37,23 @@ const users = {
   ],
 };
 
+const generateRandomId = () => {
+  const letters = "abcdefghijklmnopqrstuvwxyz";
+  const digits = "0123456789";
+
+  let randomLetters = "";
+  for (let i = 0; i < 3; i++) {
+    randomLetters += letters[Math.floor(Math.random() * letters.length)];
+  }
+
+  let randomDigits = "";
+  for (let i = 0; i < 3; i++) {
+    randomDigits += digits[Math.floor(Math.random() * digits.length)];
+  }
+
+  return randomLetters + randomDigits;
+};
+
 const findUsersByNameAndJob = (name, job) => {
   return users["users_list"].filter((user) => {
     return (
@@ -95,6 +112,7 @@ app.get("/users/:id", (req, res) => {
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
+  userToAdd.id = generateRandomId();
   const addedUser = addUser(userToAdd);
   res.status(201).send(addedUser);
 });
@@ -103,7 +121,7 @@ app.delete("/users/:id", (req, res) => {
   const id = req.params["id"];
   const wasDeleted = deleteUserById(id);
   if (wasDeleted) {
-    res.status(200).send(`User with id ${id} deleted.`);
+    res.status(204).send(`User with id ${id} deleted.`);
   } else {
     res.status(404).send("Resource not found.");
   }
