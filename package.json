@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run --workspace=packages/react-frontend dev"
   },
   "author": "",
   "license": "ISC",
   "workspaces": [
     "packages/*"
   ],
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "vite": "^5.4.8"
+  }
 }
