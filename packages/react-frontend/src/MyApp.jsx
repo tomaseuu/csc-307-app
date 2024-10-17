@@ -8,7 +8,7 @@ function MyApp() {
 
   function removeOneCharacter(index) {
     const character = characters[index];
-    const id = character.id;
+    const id = character._id;
 
     fetch(`http://localhost:8000/users/${id}`, {
       method: "DELETE",
@@ -30,9 +30,9 @@ function MyApp() {
 
   function updateList(person) {
     postUser(person)
-      .then((response) => response.json())  
+      .then((response) => response.json())
       .then((newUser) => {
-        setCharacters([...characters, newUser]); 
+        setCharacters([...characters, newUser]);
       })
       .catch((error) => {
         console.log(error);
